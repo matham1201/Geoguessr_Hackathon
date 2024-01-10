@@ -1,72 +1,83 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	"main.go/config"
 )
 
 // Book is a representation of a book
-
-type Salle struct {
-	Id            int    `json:"id"`
-	Nom           string `json:"nom"`
-	Photo         string `json:"photo"`
-	Disponibilite bool   `json:"disponibilite"`
-	Coordonnees_x string `json:"coordonnees_x"`
-	Coordonnees_y string `json:"coordonnees_y"`
-	Etage         int    `json:"etage"`
-}
-
-type Salles []Salle
-
 type Admin struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
 
-func GetLengthSalle() int {
-	var length int
-	err := config.Db().QueryRow("SELECT COUNT(*) FROM salle").Scan(&length)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return length
+type Score struct {
+	Id    int    `json:"id"`
+	Score int    `json:"score"`
+	Name  string `json:"name"`
 }
 
-func GetSalleById(id int) Salle {
-	var s Salle
-	err := config.Db().QueryRow("SELECT * FROM salle WHERE id = $1", id).Scan(&s.Id, &s.Nom, &s.Photo)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return s
-}
+type Scores []Score
 
-func GetSalleByEtage(etage int) Salles {
-	var s Salles
-	rows, err := config.Db().Query("SELECT * FROM salle WHERE etage = $1", etage)
+func GetAllScore() Scores {
+
+	var scores Scores
+
+	rows, err := config.Db().Query("SELECT * FROM scoreboard")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
-	var salles Salles // Change variable type to Salles
+
 	for rows.Next() {
-		var s Salle
-		err := rows.Scan(&s.Id, &s.Nom, &s.Photo, &s.Disponibilite, &s.Coordonnees_x, &s.Coordonnees_y, &s.Etage)
-		if err != nil {
+		var score Score
+		if err := rows.Scan(&score.Id, &score.Name, &score.Score); err != nil {
 			log.Fatal(err)
 		}
-		salles = append(salles, s) // Append to salles instead of s
+		scores = append(scores, score)
 	}
-	return s
+
+	return scores
 }
 
-func CheckAdmin(login string, password string) bool {
-	var a Admin
-	err := config.Db().QueryRow("SELECT * FROM admin WHERE login = $1 AND password = $2", login, password).Scan(&a.Login, &a.Password)
+func GetScore(id int) Score {
+
+	var score Score
+
+	rows, err := config.Db().Query("SELECT * FROM scoreboard WHERE id = ?", id)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return true
+	defer rows.Close()
+
+	for rows.Next() {
+		if err := rows.Scan(&score.Id, &score.Name, &score.Score); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	return score
+}
+
+func AddScore(score Score) {
+
+	stmt, err := config.Db().Prepare("INSERT INTO scoreboard (name, score) VALUES (?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(score.Name, score.Score)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(id)
 }
