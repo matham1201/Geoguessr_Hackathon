@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -45,13 +46,18 @@ func Score(w http.ResponseWriter, r *http.Request) { // GET a Score by id
 		json.NewEncoder(w).Encode(score)
 	case "POST":
 		var score models.Score
-		err := json.NewDecoder(r.Body).Decode(&score)
+		score.Name = r.FormValue("name")
+		fmt.Println(score.Name)
+		scoreInt, err := strconv.Atoi(r.FormValue("score"))
 		if err != nil {
-			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			http.Error(w, "Invalid score", http.StatusBadRequest)
 			return
 		}
+		score.Score = scoreInt
+
+		fmt.Println(score)
+
 		models.AddScore(score)
-		json.NewEncoder(w).Encode(score)
 	default:
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}

@@ -15,7 +15,7 @@ type Salle struct {
 	Coordonnees_y float64 `json:"cordinnates_y"`
 	Etage         int     `json:"floor"`
 	Disponibilite bool    `json:"disponibility"`
-	// Photo         sql.NullString `json:"photo"`
+	Photo         string  `json:"photo"`
 }
 
 type Salles []Salle
@@ -32,7 +32,7 @@ func GetAllSalle() Salles {
 
 	for rows.Next() {
 		var salle Salle
-		if err := rows.Scan(&salle.Id, &salle.Nom, &salle.Coordonnees_x, &salle.Coordonnees_y, &salle.Etage, &salle.Disponibilite /*, &salle.Photo*/); err != nil {
+		if err := rows.Scan(&salle.Id, &salle.Nom, &salle.Coordonnees_x, &salle.Coordonnees_y, &salle.Etage, &salle.Disponibilite, &salle.Photo); err != nil {
 			log.Fatal(err)
 		}
 
@@ -52,7 +52,7 @@ func GetSalle(id int) Salle {
 	defer rows.Close()
 
 	for rows.Next() {
-		if err := rows.Scan(&salle.Id, &salle.Nom, &salle.Coordonnees_x, &salle.Coordonnees_y, &salle.Etage, &salle.Disponibilite /*, &salle.Photo*/); err != nil {
+		if err := rows.Scan(&salle.Id, &salle.Nom, &salle.Coordonnees_x, &salle.Coordonnees_y, &salle.Etage, &salle.Disponibilite, &salle.Photo); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -60,13 +60,14 @@ func GetSalle(id int) Salle {
 }
 
 func AddSalle(salle Salle) {
+	//ceci est un commentaire
 	stmt, err := config.Db().Prepare("INSERT INTO room(name, coordinate_x, coordinate_y, floor, disponibility) VALUES(?,?,?,?,?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(salle.Nom, salle.Coordonnees_x, salle.Coordonnees_y, salle.Etage, salle.Disponibilite /*salle.Photo*/)
+	_, err = stmt.Exec(salle.Nom, salle.Coordonnees_x, salle.Coordonnees_y, salle.Etage, salle.Disponibilite, salle.Photo)
 	if err != nil {
 		log.Fatal(err)
 	}

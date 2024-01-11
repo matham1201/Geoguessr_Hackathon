@@ -8,10 +8,6 @@ import (
 )
 
 // Book is a representation of a book
-type Admin struct {
-	Login    string `json:"login"`
-	Password string `json:"password"`
-}
 
 type Score struct {
 	Id    int    `json:"id"`
