@@ -3,10 +3,10 @@ import Link from 'next/link'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
 
-export default function Home() {
+export default function colonnevertebrale() {
   return (
     <>
-    <main className='min-h-screen'>
+    <main className='grid grid-cols-1 min-h-screen content-between'>
       <Header />
       <div className="flex flex-col items-center p-24">
         <h1 className='text-5xl mb-40'>
