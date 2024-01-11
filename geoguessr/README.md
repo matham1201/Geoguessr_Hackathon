@@ -34,3 +34,25 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Connexion à la DataBase
+# Prérequis
+
+Assurez-vous d'avoir les éléments suivants installés sur votre machine :
+
+- [MySQL](https://dev.mysql.com/downloads/mysql/) : Assurez-vous que le serveur MySQL est installé et en cours d'exécution.
+
+# - Créer la Base de Données Destination (si nécessaire)
+
+Si la base de données destination n'existe pas, assurez-vous de la créer en utilisant la commande suivante dans le terminal ou la console MySQL :
+
+mysql -u UtilisateurDestination -p MotDePasseDestination -e "CREATE DATABASE IF NOT EXISTS BaseDestination;"
+
+# - Importer dans la Base de Données Destination
+
+Utilisez la commande suivante pour importer le fichier SQL exporté dans la base de données destination (remplacez les valeurs entre crochets par vos informations) :
+
+mysql -u UtilisateurDestination -p MotDePasseDestination BaseDestination < Chemin\Vers\Votre\FichierExport.sql
+
+# - Vous pouvez maintenant avoir accès à la DataBase.
+
