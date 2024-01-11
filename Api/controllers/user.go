@@ -18,11 +18,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(loginInt)
 
 		if models.CheckConnection(login.Username, loginInt) {
-			fmt.Println("ok")
+			RespondWithJSON(w, http.StatusOK, "ok")
 		} else {
-			fmt.Println("pas ok")
+			RespondWithJSON(w, http.StatusNotFound, "error")
 		}
 
-		fmt.Println(login)
 	}
 }
