@@ -20,6 +20,8 @@ const config: Config = {
       'blue': '#99c5b5',
       'grayblue': '#899e8b',
       'gray': '#706c61',
+      'gren': '#008000',
+      'red': '#f48c8c',
     },
   },
   plugins: [],

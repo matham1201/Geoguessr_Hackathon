@@ -5,9 +5,12 @@ function Page(){
 
     const Carte = () => (
         <div className="inline-block max-w-sm mx-auto bg-blue rounded overflow-hidden shadow-lg">
-            <div className="px-6 py-20">
-                {disponible() ? (<p className="text-gray flex"> Disponible </p>) : (<p className="text-gray flex"> Non disponible </p>)}
-                <div className="font-bold text-xl mb-2">Contenu de la carte</div>
+            {disponible() ? (<p className="text-gren text-right"> Disponible </p>) : (<p className="text-red text-right"> Non disponible </p>)}
+            <div className="px-6 py-7">
+                <div className="font-bold text-xl mb-2">201</div>
+            </div>
+            <div className="card-image-container">
+                <img src="/image/essaie.png" alt="voici notre salle" className="w-full h-auto rounded-t" />
             </div>
         </div>
     );
