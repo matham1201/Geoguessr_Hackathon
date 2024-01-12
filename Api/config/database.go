@@ -18,7 +18,7 @@ func DatabaseInit() {
 	fmt.Println("Connecting to database...")
 
 	//conecter a MYSQL the name of the database is Geoguessr_Ynov the host is "10.44.17.117" and the port is 3306 and the user is root and the password is root
-	db, err = sql.Open("mysql", "root:root@tcp(10.44.17.117:3306)/geoguessr")
+	db, err = sql.Open("mysql", "admin:root@tcp(195.20.246.148:3306)/geoguessr_ynov")
 
 	if err != nil {
 		log.Fatal(err)

@@ -12,14 +12,32 @@ export default function Admin() {
     const [password, setPassword] = React.useState('')
     const router = useRouter()
 
-    function checkPassword(e: { preventDefault: () => void }) {
+    async function checkPassword(e: { preventDefault: () => void }) {
         e.preventDefault();
-        if (password === "log") {
+        var data
+        try {
+            const response = await fetch('http://localhost:7000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "username": "admin", "password": password }),
+            });
+
+            // Traiter la réponse de l'API GoLang si nécessaire
+            data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi des données à l\'API GoLang :', error);
+        }
+        if (data === "ok") {
             router.push('/');
         } else {
             toast.error("Wrong password !")
         }
     }
+
+
 
     return (
         <><ToastContainer />
