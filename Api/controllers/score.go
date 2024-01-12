@@ -58,6 +58,36 @@ func Score(w http.ResponseWriter, r *http.Request) { // GET a Score by id
 		score.Score = scoreInt
 
 		models.AddScore(score)
+
+	case "DELETE":
+		idStr := r.URL.Path[len("/score/"):]
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			http.Error(w, "Invalid ID", http.StatusBadRequest)
+			return
+		}
+
+		models.DeleteScore(id)
+		json.NewEncoder(w).Encode("Score deleted")
+	case "PUT":
+		idStr := r.URL.Path[len("/score/"):]
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			http.Error(w, "Invalid ID", http.StatusBadRequest)
+			return
+		}
+		var score models.Score
+		score.Name = r.FormValue("name")
+		scoreInt, err := strconv.Atoi(r.FormValue("score"))
+		if err != nil {
+			http.Error(w, "Invalid score", http.StatusBadRequest)
+			return
+		}
+		score.Score = scoreInt
+
+		models.UpdateScore(id, score)
+		json.NewEncoder(w).Encode("Score updated")
+
 	default:
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}

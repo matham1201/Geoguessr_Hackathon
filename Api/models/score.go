@@ -70,3 +70,33 @@ func AddScore(score Score) {
 	}
 
 }
+
+func DeleteScore(id int) {
+
+	stmt, err := config.Db().Prepare("DELETE FROM scoreboard WHERE id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
+
+func UpdateScore(score Score) {
+
+	stmt, err := config.Db().Prepare("UPDATE scoreboard SET score = ? WHERE id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(score.Name, score.Score, score.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+}
