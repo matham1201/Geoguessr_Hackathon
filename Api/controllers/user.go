@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -17,12 +18,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 		var login models.Admin
-		login.Username = r.FormValue("username")
-		fmt.Println(login.Username)
-		loginInt := r.FormValue("password")
-		fmt.Println(loginInt)
+		json.NewDecoder(r.Body).Decode(&login)
+		fmt.Println("user", login.Username)
+		fmt.Println("password", login.Password)
 
-		if models.CheckConnection(login.Username, loginInt) {
+		if models.CheckConnection(login.Username, login.Password) {
 			RespondWithJSON(w, http.StatusOK, "ok")
 		} else {
 			RespondWithJSON(w, http.StatusNotFound, "error")

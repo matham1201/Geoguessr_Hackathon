@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	"main.go/config"
@@ -14,6 +15,8 @@ type Admin struct {
 
 func CheckConnection(login string, password string) bool {
 	var admin Admin
+	fmt.Println("login", login)
+	fmt.Println("password", password)
 
 	rows, err := config.Db().Query("SELECT * FROM login WHERE username = ?", login)
 	if err != nil {
@@ -27,6 +30,8 @@ func CheckConnection(login string, password string) bool {
 	}
 
 	defer rows.Close()
+
+	fmt.Println("admin", admin.Id)
 
 	if admin.Username == login && admin.Password == password {
 		return true
