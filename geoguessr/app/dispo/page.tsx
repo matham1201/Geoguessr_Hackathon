@@ -26,7 +26,7 @@ function Page() {
     const Carte = () => (
         <div className="grid grid-cols-4 gap-4 w-screen mx-auto rounded overflow-hidden shadow-lg">
             {data.map((item) => (
-            <div key={item.id} className="border-2 rounded-lg bg-blue">
+            <div key={item.id} className="border-2 rounded-lg bg-lescouleurscasertarien">
                 {item.disponibility ? (<p className="text-gren text-right"> Disponible </p>) : (<p className="text-red text-right"> Non disponible </p>)}
                 <div className="px-6 py-7">
                     <div className="font-bold text-xl mb-2">{item.name}</div>
