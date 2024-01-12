@@ -10,11 +10,11 @@ import (
 
 type Salle struct {
 	Id            int     `json:"id"`
-	Nom           string  `json:"name"`
-	Coordonnees_x float64 `json:"cordinnates_x"`
-	Coordonnees_y float64 `json:"cordinnates_y"`
-	Etage         int     `json:"floor"`
-	Disponibilite bool    `json:"disponibility"`
+	Name          string  `json:"name"`
+	Cordinnates_x float64 `json:"cordinnates_x"`
+	Cordinnates_y float64 `json:"cordinnates_y"`
+	Floor         int     `json:"floor"`
+	Disponibility bool    `json:"disponibility"`
 	Photo         string  `json:"photo"`
 }
 
@@ -32,7 +32,7 @@ func GetAllSalle() Salles {
 
 	for rows.Next() {
 		var salle Salle
-		if err := rows.Scan(&salle.Id, &salle.Nom, &salle.Coordonnees_x, &salle.Coordonnees_y, &salle.Etage, &salle.Disponibilite, &salle.Photo); err != nil {
+		if err := rows.Scan(&salle.Id, &salle.Name, &salle.Cordinnates_x, &salle.Cordinnates_y, &salle.Floor, &salle.Disponibility, &salle.Photo); err != nil {
 			log.Fatal(err)
 		}
 
@@ -52,7 +52,7 @@ func GetSalle(id int) Salle {
 	defer rows.Close()
 
 	for rows.Next() {
-		if err := rows.Scan(&salle.Id, &salle.Nom, &salle.Coordonnees_x, &salle.Coordonnees_y, &salle.Etage, &salle.Disponibilite, &salle.Photo); err != nil {
+		if err := rows.Scan(&salle.Id, &salle.Name, &salle.Cordinnates_x, &salle.Cordinnates_y, &salle.Floor, &salle.Disponibility, &salle.Photo); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -67,7 +67,7 @@ func AddSalle(salle Salle) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(salle.Nom, salle.Coordonnees_x, salle.Coordonnees_y, salle.Etage, salle.Disponibilite, salle.Photo)
+	_, err = stmt.Exec(salle.Name, salle.Cordinnates_x, salle.Cordinnates_y, salle.Floor, salle.Disponibility, salle.Photo)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,8 +93,25 @@ func UpdateSalle(salle Salle) {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(salle.Nom, salle.Coordonnees_x, salle.Coordonnees_y, salle.Etage, salle.Disponibilite, salle.Id)
+	_, err = stmt.Exec(salle.Name, salle.Cordinnates_x, salle.Cordinnates_y, salle.Floor, salle.Disponibility, salle.Id)
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func GetLastIdSalle() int {
+	var id int
+
+	rows, err := config.Db().Query("SELECT MAX(id) FROM room")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		if err := rows.Scan(&id); err != nil {
+			log.Fatal(err)
+		}
+	}
+	return id
 }

@@ -21,7 +21,14 @@ function Page() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ "name": name, "coordinate_x": x, "coordinate_y": y, "floor": floor, "disponibility": 1, "photo": image }),
+                body: JSON.stringify({
+                    "name": name,
+                    "cordinnates_x": 15.2,
+                    "cordinnates_y": 12.6,
+                    "floor": 2,
+                    "disponibility": true,
+                    "photo": "uploads/c.png"
+                    }),
             });
 
             // Traiter la réponse de l'API GoLang si nécessaire
