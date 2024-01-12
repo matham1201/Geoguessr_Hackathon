@@ -7,9 +7,9 @@ function Page() {
 
     const [data, setData] = React.useState([]);
     const [name, setName] = React.useState('');
-    const [x, setX] = React.useState('');
-    const [y, setY] = React.useState('');
-    const [floor, setFloor] = React.useState('');
+    const [x, setX] = React.useState(0.0);
+    const [y, setY] = React.useState(0.0);
+    const [floor, setFloor] = React.useState(0);
     const [image, setImage] = React.useState(null);
 
     async function sendData(e: { preventDefault: () => void }) {
@@ -86,6 +86,21 @@ function Page() {
         </div>
     );
 
+    const handleEntierChange = (e) => {
+        const nouvelleValeur = parseInt(e.target.value, 10);
+        setFloor(nouvelleValeur);
+    };
+
+    const handleX = (e) => {
+        const nouvelleValeur = parseFloat(e.target.value);
+        setX(nouvelleValeur);
+    };
+
+    const handleY = (e) => {
+        const nouvelleValeur = parseFloat(e.target.value);
+        setY(nouvelleValeur);
+    };
+
 
     console.log(data)
 
@@ -94,9 +109,9 @@ function Page() {
             <Header />
             <form onSubmit={sendData}>
                 <input type='text' id='name' name='name' placeholder='nom de la salle' onChange={e => setName(e.target.value)} />
-                <input type='text' placeholder='coordonnée x' onChange={e => setX(e.target.value)} />
-                <input type='text' placeholder='coordonnée y' onChange={e => setY(e.target.value)} />
-                <input type='text' placeholder='étage' onChange={e => setFloor(e.target.value)} />
+                <input type='number' step={0.01} placeholder='coordonnée x' onChange={handleX} />
+                <input type='number' step={0.01} placeholder='coordonnée y' onChange={handleY} />
+                <input type='number' placeholder='étage' onChange={handleEntierChange} />
                 <input type='file' accept='image/*' onChange={handleFileChange} />
                 <button type='submit'>envoyer</button>
             </form>
