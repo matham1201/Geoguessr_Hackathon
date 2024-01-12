@@ -2,15 +2,21 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
 const GeoGuessrPage = () => {
     const [data, setData] = React.useState([]);
+    const router = useRouter();
 
     React.useEffect(() => {
+        if (typeof window !== "undefined") {
+            console.log("This code runs only on the client side.");
+            
+            console.log("Data from API:", data);
+        }
+
         const fetchData = async () => {
             try {
                 const response = await fetch('/api/score');
@@ -23,46 +29,39 @@ const GeoGuessrPage = () => {
 
         fetchData();
     }, []);
-    console.log(data)
-    const [password, setPassword] = React.useState('')
-    const router = useRouter();
 
-    const checkPassword = (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
-        if (password === "log") {
-            router.push('/');
-        } else {
-            toast.error("Wrong password !");
-        }
-    }
+    const scoreFilter = data.filter((item) => item.id === 1);
 
     return (
         <>
-            <ToastContainer />
-            <main className="grid grid-cols-1 min-h-screen content-between">
-                {data.map((item) => (
-                    <li key={item.id}>{item.name}</li>
-                ))}
+            <div className="grid grid-cols-1 content-between min-h-screen">
                 <Header />
-                <div className="flex flex-col items-center p-24">
-                    <form onSubmit={checkPassword}>
-                        <input
-                            type="password"
-                            placeholder="admin's password"
-                            required
-                            className="p-4 border-4 rounded-lg border-blue focus:border-grayblue focus:outline-none"
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <button
-                            type="submit"
-                            className="mt-4 p-2 bg-blue text-white rounded-md cursor-pointer"
-                        >
-                            Enter
-                        </button>
-                    </form>
+                <div className="flex flex-col w-full h-screen bg-[url('/201.webp')] bg-no-repeat bg-contain bg-center">
+                    {/*<ul className="text-white">
+                        {data.map((item) => (
+                            <li key={item.id}>{item.name}</li>
+                        ))}
+                        </ul>*/}
+                    {/*div pour le bloc de la carte simulée */}
+                    <div className="flex">
+                        {/* Deuxième bloc à gauche */}
+                        <div className="w-3/4 h-60 mb-4 self-end ">
+                            <div className="Score">
+                                <p className="text-4xl text-center text-blue">Score</p>
+                                <p className="text-4xl text-center text-blue">{scoreFilter.map((item) => (
+                                    <li key={item.id}>{item.score}</li>
+                                ))}</p>
+                            </div>
+                        </div>
+                        {/* Premier bloc à droite */}
+                        <div className="w-full h-60 mb-4 mx-2 self-end ">
+                            {/*image statique de la carte en tant qu'arrière-plan */}
+                            <div className="h-full w-full bg-center bg-contain bg-no-repeat bg-[url('/1er.jpg')]" ></div>
+                        </div>
+                    </div>
                 </div>
                 <Footer />
-            </main>
+            </div>
         </>
     );
 };
