@@ -32,7 +32,7 @@ function PagePerso(){
                     <p>elle est à l'étage : {data.floor}</p>
                     <p>elle est {data.disponibility ? (<p className=" flex text-gren"> Disponible </p>) : (<p className="flex text-red"> Non disponible </p>)}</p>
                 </div>
-                <img src={`http://localhost:7000/image/${data.id}`} alt="nous n'avons pas d'image de la salle" className="w-full h-auto rounded-t max-w-screen" />
+                <img src={`http://localhost:7000/image/${data.id}`} alt="nous n'avons pas d'image de la salle" className="h-auto rounded-t w-1/2" />
         </div>
     );
 
