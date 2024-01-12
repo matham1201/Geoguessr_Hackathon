@@ -1,55 +1,78 @@
 "use client"
 
-import Footer from "@/components/footer"
-import Header from "@/components/header"
-import { useRouter } from "next/navigation"
-import React from "react"
-import { toast, ToastContainer } from "react-toastify"
-import 'react-toastify/dist/ReactToastify.css';
+import React from 'react';
+import disponible from './disponible';
+import Header from '@/components/header';
 
-export default function Admin() {
+function Page() {
 
-    const [password, setPassword] = React.useState('')
-    const router = useRouter()
+    const [data, setData] = React.useState([]);
 
-    async function checkPassword(e: { preventDefault: () => void }) {
-        e.preventDefault();
-        var data
+    const fetchData = async () => {
         try {
-            const response = await fetch('http://localhost:7000/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ "username": "admin", "password": password }),
+            const response = await fetch('/api/salle');
+            const apiData = await response.json();
+            setData(apiData.salle);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des données de l\'API', error);
+        }
+    };
+
+    React.useEffect(() => {
+        fetchData();
+    }, []);
+
+    const Delete = async (id) => {
+        try {
+            const deleteResponse = await fetch(`http://localhost:7000/salle/${id}`, {
+                method: 'DELETE',
             });
 
-            // Traiter la réponse de l'API GoLang si nécessaire
-            data = await response.json();
-            console.log(data);
+            if (deleteResponse.ok) {
+                // Rafraîchissez vos données après la suppression si nécessaire
+                fetchData();
+                console.log('Suppression réussie');
+            } else {
+                console.error('Échec de la suppression');
+            }
         } catch (error) {
-            console.error('Erreur lors de l\'envoi des données à l\'API GoLang :', error);
+            console.error('Erreur lors de la suppression', error);
         }
-        if (data === "ok") {
-            router.push('/');
-        } else {
-            toast.error("Wrong password !")
-        }
-    }
+    };
 
 
+
+    const Carte = () => (
+        <div className="grid grid-cols-4 gap-4 w-screen mx-auto rounded overflow-hidden shadow-lg">
+            {data.map((item) => (
+                <div key={item.id} className="border-2 rounded-lg bg-lescouleurscasertarien">
+                    <button onClick={() => Delete(item.id)}>supprimer</button>
+                    {item.disponibility ? (<p className="text-gren text-right"> Disponible </p>) : (<p className="text-red text-right"> Non disponible </p>)}
+                    <div className="px-6 py-7">
+                        <div className="font-bold text-xl mb-2">{item.name}</div>
+                    </div>
+                    <div className="card-image-container">
+                        <img src={`http://localhost:7000/image/${item.id}`} alt="nous n'avons pas d'image de la salle" className="w-full h-auto rounded-t" />
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+    console.log(data)
 
     return (
-        <><ToastContainer />
-            <main className="grid grid-cols-1 min-h-screen content-between">
-                <Header />
-                <div className="flex flex-col items-center p-24 ">
-                    <form onSubmit={checkPassword}>
-                        <input type="password" placeholder="admin's password" required className="p-4 border-4 rounded-lg border-blue focus:border-grayblue focus:outline-none"
-                            onChange={e => setPassword(e.target.value)} />
-                    </form>
+        <main className="bg-celeste min-h-screen">
+            <Header />
+            <h1 className="text-5xl font-bold text-grayblue">
+                <div className="p-12 flex items-center justify-center w-screen ">
+                    Vérifier la disponibilité des salles !!
                 </div>
-                <Footer />
-            </main></>
+            </h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <Carte />
+            </div>
+        </main>
     )
 }
+
+export default Page;
