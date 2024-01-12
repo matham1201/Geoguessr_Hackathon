@@ -23,11 +23,11 @@ function Page() {
                 },
                 body: JSON.stringify({
                     "name": name,
-                    "cordinnates_x": 15.2,
-                    "cordinnates_y": 12.6,
-                    "floor": 2,
+                    "cordinnates_x": x,
+                    "cordinnates_y": y,
+                    "floor": floor,
                     "disponibility": true,
-                    "photo": "uploads/c.png"
+                    "photo": image
                     }),
             });
 
