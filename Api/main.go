@@ -15,8 +15,8 @@ func main() {
 	http.HandleFunc("/score", controllers.Score)  // GET & Post
 	http.HandleFunc("/score/", controllers.Score) //Get by Id
 
-	http.HandleFunc("/salle", controllers.AllSalle) // GET & Post
-	http.HandleFunc("/salle/", controllers.AllSalle)
+	http.HandleFunc("/salle", controllers.Salle) // GET & Post
+	http.HandleFunc("/salle/", controllers.Salle)
 
 	http.HandleFunc("/image/", controllers.GetImage) // GET & Post
 
