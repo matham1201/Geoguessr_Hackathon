@@ -72,3 +72,29 @@ func AddSalle(salle Salle) {
 		log.Fatal(err)
 	}
 }
+
+func DeleteSalle(id int) {
+	stmt, err := config.Db().Prepare("DELETE FROM room WHERE id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func UpdateSalle(salle Salle) {
+	stmt, err := config.Db().Prepare("UPDATE room SET name = ?, coordinate_x = ?, coordinate_y = ?, floor = ?, disponibility = ? WHERE id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(salle.Nom, salle.Coordonnees_x, salle.Coordonnees_y, salle.Etage, salle.Disponibilite, salle.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
+}

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -12,6 +11,9 @@ import (
 	"main.go/config"
 	"main.go/models"
 )
+
+const uploadDirectory = "./uploads/"
+const maxUploadSize = 10 * 1024 * 1024 // 10 MB
 
 func AllSalle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -71,7 +73,6 @@ func AllSalle(w http.ResponseWriter, r *http.Request) {
 
 		salle.Photo = filePath
 
-		fmt.Println(salle)
 		//insert the new room in the database
 		_, err = config.Db().Exec("INSERT INTO room (id, name, coordinate_x, coordinate_y, floor, disponibility, photo) VALUES (?, ?, ?, ?, ?, ?, ?)", salle.Id, salle.Nom, salle.Coordonnees_x, salle.Coordonnees_y, salle.Etage, salle.Disponibilite, salle.Photo)
 		if err != nil {
@@ -80,8 +81,30 @@ func AllSalle(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		fmt.Fprintf(w, "Room created successfully")
 
+	case "PUT":
+		idStr := r.URL.Path[len("/salle/"):]
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			RespondWithError(w, http.StatusBadRequest, "400", "Invalid ID")
+			return
+		}
+
+		var salle models.Salle
+		json.NewDecoder(r.Body).Decode(&salle)
+		salle.Id = id
+		models.UpdateSalle(salle)
+		json.NewEncoder(w).Encode(salle)
+	case "DELETE":
+		idStr := r.URL.Path[len("/salle/"):]
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			RespondWithError(w, http.StatusBadRequest, "400", "Invalid ID")
+			return
+		}
+
+		models.DeleteSalle(id)
+		w.WriteHeader(http.StatusNoContent)
 	default:
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"log"
 
 	"main.go/config"
@@ -65,15 +64,39 @@ func AddScore(score Score) {
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(score.Name, score.Score)
+	_, err = stmt.Exec(score.Name, score.Score)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	id, err := res.LastInsertId()
+}
+
+func DeleteScore(id int) {
+
+	stmt, err := config.Db().Prepare("DELETE FROM scoreboard WHERE id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(id)
+}
+
+func UpdateScore(score Score) {
+
+	stmt, err := config.Db().Prepare("UPDATE scoreboard SET score = ? WHERE id = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(score.Name, score.Score, score.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }
