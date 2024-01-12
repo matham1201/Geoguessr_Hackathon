@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"log"
 
 	"main.go/config"
@@ -65,15 +64,9 @@ func AddScore(score Score) {
 	}
 	defer stmt.Close()
 
-	res, err := stmt.Exec(score.Name, score.Score)
+	_, err = stmt.Exec(score.Name, score.Score)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	id, err := res.LastInsertId()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(id)
 }

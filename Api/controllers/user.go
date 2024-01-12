@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"main.go/models"
@@ -19,8 +18,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	case "POST":
 		var login models.Admin
 		json.NewDecoder(r.Body).Decode(&login)
-		fmt.Println("user", login.Username)
-		fmt.Println("password", login.Password)
 
 		if models.CheckConnection(login.Username, login.Password) {
 			RespondWithJSON(w, http.StatusOK, "ok")
