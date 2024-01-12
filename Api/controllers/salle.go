@@ -2,10 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 
 	"main.go/config"
@@ -16,6 +13,7 @@ const uploadDirectory = "./uploads/"
 const maxUploadSize = 10 * 1024 * 1024 // 10 MB
 
 func AllSalle(w http.ResponseWriter, r *http.Request) {
+
 	// Add CORS headers
 	enableCors(&w)
 	switch r.Method {
@@ -41,37 +39,14 @@ func AllSalle(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(salle)
 	case "POST":
 		var salle models.Salle
-		salle.Id = config.GetLengthRoom() + 1
-		salle.Nom = r.FormValue("name")
-		salle.Coordonnees_x, _ = strconv.ParseFloat(r.FormValue("cordinnates_x"), 64)
-		salle.Coordonnees_y, _ = strconv.ParseFloat(r.FormValue("cordinnates_y"), 64)
-		salle.Etage, _ = strconv.Atoi(r.FormValue("floor"))
-		salle.Disponibilite, _ = strconv.ParseBool(r.FormValue("disponibility"))
-		file, handler, err := r.FormFile("image")
+		err := json.NewDecoder(r.Body).Decode(&salle)
 		if err != nil {
-			http.Error(w, "Unable to get file from form", http.StatusBadRequest)
+			RespondWithError(w, http.StatusBadRequest, "400", "Invalid JSON payload")
 			return
 		}
-		defer file.Close()
-
-		// Save the uploaded file to the server
-		filePath := filepath.Join(uploadDirectory, handler.Filename)
-		dst, err := os.Create(filePath)
-		if err != nil {
-			http.Error(w, "Unable to create the file", http.StatusInternalServerError)
-			return
-		}
-		defer dst.Close()
-
-		if _, err := io.Copy(dst, file); err != nil {
-			http.Error(w, "Unable to copy file", http.StatusInternalServerError)
-			return
-		}
-
-		salle.Photo = filePath
 
 		//insert the new room in the database
-		_, err = config.Db().Exec("INSERT INTO room (id, name, coordinate_x, coordinate_y, floor, disponibility, photo) VALUES (?, ?, ?, ?, ?, ?, ?)", salle.Id, salle.Nom, salle.Coordonnees_x, salle.Coordonnees_y, salle.Etage, salle.Disponibilite, salle.Photo)
+		_, err = config.Db().Exec("INSERT INTO room (id, name, coordinate_x, coordinate_y, floor, disponibility, photo) VALUES (?, ?, ?, ?, ?, ?, ?)", salle.Id, salle.Name, salle.Cordinnates_x, salle.Cordinnates_y, salle.Floor, salle.Disponibility, salle.Photo)
 		if err != nil {
 			http.Error(w, "Unable to insert the room", http.StatusInternalServerError)
 			return
