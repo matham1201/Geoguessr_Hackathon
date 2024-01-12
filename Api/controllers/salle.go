@@ -16,11 +16,8 @@ const uploadDirectory = "./uploads/"
 const maxUploadSize = 10 * 1024 * 1024 // 10 MB
 
 func AllSalle(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	// Add CORS headers
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	enableCors(&w)
 	switch r.Method {
 	case "GET":
 		if r.URL.Path == "/salle" {
@@ -105,6 +102,9 @@ func AllSalle(w http.ResponseWriter, r *http.Request) {
 
 		models.DeleteSalle(id)
 		w.WriteHeader(http.StatusNoContent)
+	case "OPTIONS":
+		w.WriteHeader(http.StatusOK)
+
 	default:
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
@@ -124,4 +124,13 @@ func RespondWithError(w http.ResponseWriter, status int, errorType, message stri
 		"error":   errorType,
 	}
 	json.NewEncoder(w).Encode(errorResponse)
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "*")
+	(*w).Header().Set("Access-Control-Allow-Headers", "*")
+	(*w).Header().Set("Access-Control-Allow-Credentials", "true")
+	(*w).Header().Set("Content-Type", "application/json")
+
 }
