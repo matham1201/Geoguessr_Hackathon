@@ -25,7 +25,7 @@ export default function colonnevertebrale() {
             <div className='mb-4'>
               Besoin d'une salle?
             </div>
-            <Link href='/game' className='border-4 rounded-lg border-blue p-2 w-fit hover:border-grayblue hover:animate-pulse'>
+            <Link href='/dispo' className='border-4 rounded-lg border-blue p-2 w-fit hover:border-grayblue hover:animate-pulse'>
               Accédez au répertoire des salles
             </Link>
           </div>
