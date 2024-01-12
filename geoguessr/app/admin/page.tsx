@@ -1,12 +1,36 @@
 "use client"
 
 import React from 'react';
-import disponible from './disponible';
 import Header from '@/components/header';
 
 function Page() {
 
     const [data, setData] = React.useState([]);
+    const [name, setName] = React.useState('');
+    const [x, setX] = React.useState('');
+    const [y, setY] = React.useState('');
+    const [floor, setFloor] = React.useState('');
+    const [image, setImage] = React.useState(null);
+
+    async function sendData(e: { preventDefault: () => void }) {
+        e.preventDefault();
+        var data
+        try {
+            const response = await fetch('http://localhost:7000/salle', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "name": name, "coordinate_x": x, "coordinate_y": y, "floor": floor, "disponibility": 1, "photo": image }),
+            });
+
+            // Traiter la réponse de l'API GoLang si nécessaire
+            data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi des données à l\'API GoLang :', error);
+        }
+    }
 
     const fetchData = async () => {
         try {
@@ -40,7 +64,10 @@ function Page() {
         }
     };
 
-
+    const handleFileChange = (event) => {
+        const selectedFile = event.target.files[0];
+        setImage(selectedFile);
+    };
 
     const Carte = () => (
         <div className="grid grid-cols-4 gap-4 w-screen mx-auto rounded overflow-hidden shadow-lg">
@@ -58,11 +85,22 @@ function Page() {
             ))}
         </div>
     );
+
+
     console.log(data)
 
     return (
         <main className="bg-celeste min-h-screen">
             <Header />
+            <form onSubmit={sendData}>
+                <input type='text' id='name' name='name' placeholder='nom de la salle' onChange={e => setName(e.target.value)} />
+                <input type='text' placeholder='coordonnée x' onChange={e => setX(e.target.value)} />
+                <input type='text' placeholder='coordonnée y' onChange={e => setY(e.target.value)} />
+                <input type='text' placeholder='étage' onChange={e => setFloor(e.target.value)} />
+                <input type='file' accept='image/*' onChange={handleFileChange} />
+                <button type='submit'>envoyer</button>
+            </form>
+
             <h1 className="text-5xl font-bold text-grayblue">
                 <div className="p-12 flex items-center justify-center w-screen ">
                     Vérifier la disponibilité des salles !!
