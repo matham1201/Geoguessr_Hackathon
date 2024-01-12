@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Link from "next/link";
 
 
 export default function Login() {
@@ -63,7 +64,9 @@ export default function Login() {
                     </div>
                     <input type="submit" value="Connexion" className="bg-blue p-2 pr-16 pl-16 rounded-lg hover:bg-white border-4 border-blue hover:text-blue text-white" />
                 </form>
+                <Link href="/logadmin" className="text-black p-2 m-2 border-2 w-fit rounded-lg text-blue hover:text-grayblue">mode admin</Link>
             </div>
+            
             <Footer />
         </main>
     )
