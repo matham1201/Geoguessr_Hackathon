@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Link from "next/link";
 
 
-export default function Login() {
+export default function Soleil() {
 
     const [mail, setMail] = React.useState('')
     const [password, setPassword] = React.useState('')
@@ -43,7 +44,7 @@ export default function Login() {
             <ToastContainer />
             <div className="grid grid-cols-3 content-center ml-80 mr-80">
                 <div className="flex flex-col items-center justify-between bg-blue rounded-l-xl pt-16 pb-16 text-white">
-                    <img src="/logo_ynov_campus_blanc.svg" width={150} />
+                    <img src="/teddyriner.svg" width={150} />
                     <div className="mt-8 font-bold text-xl">Bienvenue dans la communauté Ynov</div>
                     <div className="m-8">Candidats, Etudiants, Professeurs et Entreprises : accédez aux outils et services Ynov Campus à l'aide de votre Compte Ynov !</div>
                     <div className="border-2 border-white rounded-lg p-2 pl-8 pr-8">
@@ -63,7 +64,9 @@ export default function Login() {
                     </div>
                     <input type="submit" value="Connexion" className="bg-blue p-2 pr-16 pl-16 rounded-lg hover:bg-white border-4 border-blue hover:text-blue text-white" />
                 </form>
+                <Link href="/logadmin" className="text-black p-2 m-2 border-2 w-fit rounded-lg text-blue hover:text-grayblue">mode admin</Link>
             </div>
+            
             <Footer />
         </main>
     )
