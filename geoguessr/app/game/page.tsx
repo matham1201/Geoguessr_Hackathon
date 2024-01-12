@@ -35,13 +35,9 @@ const GeoGuessrPage = () => {
     return (
         <>
             <div className="grid grid-cols-1 content-between min-h-screen">
-                <Header />
+                
                 <div className="flex flex-col w-full h-screen bg-[url('/201.webp')] bg-no-repeat bg-contain bg-center">
-                    {/*<ul className="text-white">
-                        {data.map((item) => (
-                            <li key={item.id}>{item.name}</li>
-                        ))}
-                        </ul>*/}
+                    <Header />
                     {/*div pour le bloc de la carte simulée */}
                     <div className="flex">
                         {/* Deuxième bloc à gauche */}
@@ -60,7 +56,6 @@ const GeoGuessrPage = () => {
                         </div>
                     </div>
                 </div>
-                <Footer />
             </div>
         </>
     );
