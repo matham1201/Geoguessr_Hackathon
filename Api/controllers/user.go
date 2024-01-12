@@ -8,18 +8,14 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	// Add CORS headers
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	enableCors(&w) // On autorise les requêtes cross-origin
 
 	switch r.Method {
-	case "POST":
+	case "POST": // Method POST
 		var login models.Admin
-		json.NewDecoder(r.Body).Decode(&login)
+		json.NewDecoder(r.Body).Decode(&login) // On décode le json en objet Admin
 
-		if models.CheckConnection(login.Username, login.Password) {
+		if models.CheckConnection(login.Username, login.Password) { // On vérifie si le login et le mot de passe sont corrects
 			RespondWithJSON(w, http.StatusOK, "ok")
 		} else {
 			RespondWithJSON(w, http.StatusNotFound, "error")

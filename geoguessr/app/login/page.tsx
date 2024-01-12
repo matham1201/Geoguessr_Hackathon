@@ -13,15 +13,30 @@ export default function Login() {
     const [password, setPassword] = React.useState('')
     const router = useRouter()
 
-    function log(e: { preventDefault: () => void; }) {
-        e.preventDefault()
-        if(mail !== "remy@ynov.com" || password !== "log"){
-            toast.error("Adresse mail / mot de passe incorrect !")
+    async function checkPassword(e: { preventDefault: () => void }) {
+        e.preventDefault();
+        var data
+        try {
+            const response = await fetch('http://localhost:7000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ "username": mail, "password": password }),
+            });
+
+            // Traiter la réponse de l'API GoLang si nécessaire
+            data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi des données à l\'API GoLang :', error);
+        }
+        if (data === "ok") {
+            router.push('/');
         } else {
-            router.push('/')
+            toast.error("Adresse mail / mot de passe incorrect !")
         }
     }
-
 
     return (
         <main className="grid grid-cols-1 min-h-screen content-between">
@@ -36,11 +51,11 @@ export default function Login() {
                     </div>
 
                 </div>
-                <form className="flex flex-col items-center justify-center space-y-4 bg-white rounded-r-xl col-span-2 pt-16 pb-16" onSubmit={log}>
+                <form className="flex flex-col items-center justify-center space-y-4 bg-white rounded-r-xl col-span-2 pt-16 pb-16" onSubmit={checkPassword}>
                     <div className="text-blue text-4xl font-bold">Connexion</div>
                     <div className="flex flex-col w-3/5">
                         <label htmlFor="mail">E-mail :</label>
-                        <input type="email" id="mail" name="mail" required className="border-2 rounded-lg p-2" onChange={e => setMail(e.target.value)} />
+                        <input type="text" id="mail" name="mail" required className="border-2 rounded-lg p-2" onChange={e => setMail(e.target.value)} />
                     </div>
                     <div className="flex flex-col w-3/5">
                         <label htmlFor="password">Mot de passe :</label>
