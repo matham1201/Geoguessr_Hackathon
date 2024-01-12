@@ -1,6 +1,5 @@
-function disponible() {
-  const randomBoolean = () => Math.random() < 0.5;
-  return randomBoolean();
+function disponible(value) {
+  return value;
 }
 
 export default disponible;
