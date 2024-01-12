@@ -2,10 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 
 	"main.go/config"
@@ -14,6 +11,7 @@ import (
 
 const uploadDirectory = "./uploads/"
 const maxUploadSize = 10 * 1024 * 1024 // 10 MB
+
 
 func Salle(w http.ResponseWriter, r *http.Request) {
 	// Add CORS headers
@@ -38,40 +36,20 @@ func Salle(w http.ResponseWriter, r *http.Request) {
 			RespondWithError(w, http.StatusNotFound, "404", "Salle not found")
 			return
 		}
-		json.NewEncoder(w).Encode(salle) // On encode la salle en json
-	case "POST": // Method POST
-		var salle models.Salle // On crée une nouvelle salle
-		salle.Id = config.GetLengthRoom() + 1
-		salle.Nom = r.FormValue("name")
-		salle.Coordonnees_x, _ = strconv.ParseFloat(r.FormValue("cordinnates_x"), 64)
-		salle.Coordonnees_y, _ = strconv.ParseFloat(r.FormValue("cordinnates_y"), 64)
-		salle.Etage, _ = strconv.Atoi(r.FormValue("floor"))
-		salle.Disponibilite, _ = strconv.ParseBool(r.FormValue("disponibility"))
-		file, handler, err := r.FormFile("image")
+		json.NewEncoder(w).Encode(salle)
+	case "POST":
+		var salle models.Salle
+		err := json.NewDecoder(r.Body).Decode(&salle)
+
 		if err != nil {
-			http.Error(w, "Unable to get file from form", http.StatusBadRequest)
-			return
-		}
-		defer file.Close()
-
-		// Save the uploaded file to the server
-		filePath := filepath.Join(uploadDirectory, handler.Filename)
-		dst, err := os.Create(filePath) // On crée le fichier
-		if err != nil {
-			http.Error(w, "Unable to create the file", http.StatusInternalServerError)
-			return
-		}
-		defer dst.Close()
-
-		if _, err := io.Copy(dst, file); err != nil { // On copie le fichier
-			http.Error(w, "Unable to copy file", http.StatusInternalServerError)
+			RespondWithError(w, http.StatusBadRequest, "400", "Invalid JSON payload")
 			return
 		}
 
-		salle.Photo = filePath // On récupère le chemin du fichier
 
-		// On insère la salle dans la base de données
-		_, err = config.Db().Exec("INSERT INTO room (id, name, coordinate_x, coordinate_y, floor, disponibility, photo) VALUES (?, ?, ?, ?, ?, ?, ?)", salle.Id, salle.Nom, salle.Coordonnees_x, salle.Coordonnees_y, salle.Etage, salle.Disponibilite, salle.Photo)
+		//insert the new room in the database
+		_, err = config.Db().Exec("INSERT INTO room (id, name, coordinate_x, coordinate_y, floor, disponibility, photo) VALUES (?, ?, ?, ?, ?, ?, ?)", salle.Id, salle.Name, salle.Cordinnates_x, salle.Cordinnates_y, salle.Floor, salle.Disponibility, salle.Photo)
+
 		if err != nil {
 			http.Error(w, "Unable to insert the room", http.StatusInternalServerError)
 			return
