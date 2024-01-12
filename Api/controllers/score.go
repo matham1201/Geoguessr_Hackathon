@@ -83,9 +83,10 @@ func Score(w http.ResponseWriter, r *http.Request) { // GET a Score by id
 			http.Error(w, "Invalid score", http.StatusBadRequest)
 			return
 		}
+		score.Id = id
 		score.Score = scoreInt
 
-		models.UpdateScore(id, score)
+		models.UpdateScore(score)
 		json.NewEncoder(w).Encode("Score updated")
 
 	default:
